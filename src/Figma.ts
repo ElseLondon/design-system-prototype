@@ -1,31 +1,29 @@
-import axios from 'axios';
+import axios from 'axios'
+import 'dotenv/config'
 
-type User = {
-  id: number
-  email: string
-  first_name: string
+type GetMeResponse = {
+  data: {
+    "id": string;
+    "email": string;
+    "handle": string;
+    "img_url": string;
+  },
+  status: number
 }
 
-type GetUsersResponse = {
-  data: User[]
-}
-
-export function hello(name: string): string {
-  return `Hello ${name}`
-}
-
-export async function getUsers() {
+export async function getMe() {
   try {
-    const { data, status } = await axios.get<GetUsersResponse>(
-      'https://reqres.in/api/users',
+    const { data, status } = await axios.get<GetMeResponse>(
+      'https://api.figma.com/v1/me',
       {
         headers: {
           Accept: 'application/json',
+          'X-Figma-Token': process.env.X_FIGMA_TOKEN || ''
         },
       },
     );
 
-    // console.log(JSON.stringify(data, null, 4));
+    console.log(JSON.stringify(data, null, 4));
     console.log('RESPONSE STATUS: ', status);
 
     return data;
