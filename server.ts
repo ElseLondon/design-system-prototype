@@ -1,42 +1,12 @@
-import axios from 'axios';
+import express, { Request, Response } from 'express';
 
-type User = {
-  id: number;
-  email: string;
-  first_name: string;
-};
+const app = express();
+const port = 3000;
 
-type GetUsersResponse = {
-  data: User[];
-};
+app.get('/', (req: Request, res: Response) => {
+  res.send('Hello, Earth.');
+});
 
-async function getUsers() {
-  try {
-    // 👇️ const data: GetUsersResponse
-    const { data, status } = await axios.get<GetUsersResponse>(
-      'https://reqres.in/api/users',
-      {
-        headers: {
-          Accept: 'application/json',
-        },
-      },
-    );
-
-    console.log(JSON.stringify(data, null, 4));
-
-    // 👇️ "response status is: 200"
-    console.log('response status is: ', status);
-
-    return data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log('error message: ', error.message);
-      return error.message;
-    } else {
-      console.log('unexpected error: ', error);
-      return 'An unexpected error occurred';
-    }
-  }
-}
-
-getUsers();
+app.listen(port, () => {
+  console.log(`ELSE Design System Prototype signals to http://localhost:${port}`)
+});
