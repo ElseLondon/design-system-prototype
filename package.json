@@ -1,0 +1,11 @@
+{
+  "name": "design-system-prototype",
+  "version": "1.0.0",
+  "description": "A Prototype for ELSE's Design System",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sim",
+  "license": "ISC"
+}
