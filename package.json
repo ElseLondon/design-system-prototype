@@ -4,8 +4,17 @@
   "description": "A Prototype for ELSE's Design System",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "npx prettier --write ."
   },
   "author": "Sim",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "eslint": "^8.18.0",
+    "prettier": "2.7.1",
+    "typescript": "^4.7.4"
+  }
 }
