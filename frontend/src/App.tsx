@@ -34,6 +34,10 @@ function App() {
 
   const submitStyleInfo = () => {
     console.log('Style Info being submitted...');
+    console.log('paddingTop',    paddingTop);
+    console.log('paddingBottom', paddingBottom);
+    console.log('paddingLeft',   paddingLeft);
+    console.log('paddingRight',  paddingRight);
   };
 
   const inactivate = () => {
@@ -42,6 +46,7 @@ function App() {
     console.log('paddingBottom', paddingBottom);
     console.log('paddingLeft',   paddingLeft);
     console.log('paddingRight',  paddingRight);
+
     if (paddingTop === '' || paddingBottom === '' || paddingLeft === '' || paddingRight === '') return true;
 
     // if any cannot be parsed into numbers - return true
