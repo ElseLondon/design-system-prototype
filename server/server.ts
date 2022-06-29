@@ -1,10 +1,26 @@
 import express, { Request, Response } from 'express';
+import fs from 'firebase-admin';
+import serviceAccount from './design-system-prototype-c15552de6472.json'
+
+fs.initializeApp({
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  credential: fs.credential.cert(serviceAccount)
+});
+
+const db = fs.firestore();
 
 const app = express();
 const port = 3000;
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, Earth.');
+app.get('/', async (req: Request, res: Response) => {
+  const styleRef = db.collection('users').doc('6MU0LKOQPpG2k9nAbfBk');
+  const doc = await styleRef.get();
+  if (!doc.exists) {
+    res.send("No document data");
+  } else {
+    res.send(doc.data());
+  }
 });
 
 app.listen(port, () => {

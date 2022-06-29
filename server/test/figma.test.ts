@@ -1,5 +1,7 @@
 import { getMe } from "../src/Figma"
 import axios from 'axios'
+import jest from 'jest'
+
 jest.mock('axios')
 
 describe("Figma test suite", () => {
