@@ -4,6 +4,28 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import BrushIcon from '@mui/icons-material/Brush';
+// extract into firestore: 'src/services/firestore'
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { doc, updateDoc } from "firebase/firestore"; 
+import { getFirestore } from 'firebase/firestore/lite';
+//
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBvP_47oJuIehuFnckc0ouq7FvBo1Qvpyw",    
+  authDomain: "design-system-prototype.firebaseapp.com",
+  projectId: "design-system-prototype",                 
+  storageBucket: "design-system-prototype.appspot.com", 
+  messagingSenderId: "405543776910",                    
+  appId: "1:405543776910:web:2f5a74b6f0855e09cd8fdf",   
+  measurementId: "G-TYWTTVWMXW"                         
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore();
+
 
 const appStyle = {
   '& > :not(style)': { m: 1, width: '25ch' },
@@ -32,26 +54,32 @@ function App() {
     if (eventChange !== paddingRight) setPaddingRight(eventChange);
   };
 
-  const submitStyleInfo = () => {
+  const submitStyleInfo = async () => {
     console.log('Style Info being submitted...');
-    console.log('paddingTop',    paddingTop);
-    console.log('paddingBottom', paddingBottom);
-    console.log('paddingLeft',   paddingLeft);
-    console.log('paddingRight',  paddingRight);
+
+    // extract into firestore: 'src/services/firestore'
+    // as function saveStyles
+    try {
+      const styleRef = doc(db, "users", "6MU0LKOQPpG2k9nAbfBk");
+      await updateDoc(styleRef, {
+        paddingTop,
+        paddingBottom,
+        paddingLeft,
+        paddingRight
+      });
+      console.log("Document 6MU0LKOQPpG2k9nAbfBk Padding Styles updated");
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+    // 
   };
 
   const inactivate = () => {
     console.log('Checking for whether to inactivate button...');
-    console.log('paddingTop',    paddingTop);
-    console.log('paddingBottom', paddingBottom);
-    console.log('paddingLeft',   paddingLeft);
-    console.log('paddingRight',  paddingRight);
 
     if (paddingTop === '' || paddingBottom === '' || paddingLeft === '' || paddingRight === '') return true;
-
     // if any cannot be parsed into numbers - return true
-    // if any cannot are negative           - return true
-
+    // if any are negative           - return true
     return false;
   };
   
@@ -66,6 +94,7 @@ function App() {
           noValidate
           autoComplete="off"
         >
+          {/* can be refactored into "FormField" Component */}
           <TextField
             id="outlined-basic"
             variant="outlined"
@@ -91,7 +120,12 @@ function App() {
             onChange={e => onPaddingRightChange(e.target.value)}
           />
 
-          <Button variant="contained" onClick={submitStyleInfo} disabled={inactivate()} endIcon={<BrushIcon />}>
+          <Button
+            variant="contained"
+            onClick={submitStyleInfo}
+            disabled={inactivate()}
+            endIcon={<BrushIcon />}
+          >
             Apply Styling
           </Button>
         </Box>
