@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import fs from 'firebase-admin';
-import serviceAccount from './design-system-prototype-c15552de6472.json'
+import serviceAccount from './design-system-prototype-5a79b-4fd64a51bb9e.json'
 
 fs.initializeApp({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
