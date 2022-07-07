@@ -128,3 +128,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Credentials
+design-system-prototype-5a79b-4fd64a51bb9e.json

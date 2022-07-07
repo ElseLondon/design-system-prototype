@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import fs from 'firebase-admin';
-import serviceAccount from './design-system-prototype-c15552de6472.json'
+import serviceAccount from './design-system-prototype-5a79b-4fd64a51bb9e.json'
 
 fs.initializeApp({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -11,7 +11,7 @@ fs.initializeApp({
 const db = fs.firestore();
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 app.get('/', async (req: Request, res: Response) => {
   const styleRef = db.collection('users').doc('6MU0LKOQPpG2k9nAbfBk');
