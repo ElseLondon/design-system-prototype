@@ -2,9 +2,13 @@
   "name": "design-system-prototype",
   "version": "1.0.0",
   "description": "A Prototype for ELSE's Design System",
+  "engines": {
+    "node": "16"
+  },
   "main": "server.js",
   "scripts": {
-    "start": "ts-node server.ts",
+    "start": "node server.js",
+    "start:dev": "ts-node server.ts",
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "lint:fix": "npx prettier --write ."

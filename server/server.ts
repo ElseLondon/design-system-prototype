@@ -11,7 +11,7 @@ fs.initializeApp({
 const db = fs.firestore();
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 app.get('/', async (req: Request, res: Response) => {
   const styleRef = db.collection('users').doc('6MU0LKOQPpG2k9nAbfBk');

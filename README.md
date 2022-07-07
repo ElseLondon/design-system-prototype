@@ -6,13 +6,17 @@ A Prototype for ELSE's Design System
 
 # Frontend
 FE: https://design-system-prototype-5a79b.ew.r.appspot.com/
-* ensure correct credentials in `App.tsx`
+* ensure correct credentials from `.env` are read in `App.tsx`
 * `npm run build`
 * `gcloud init` & check that settings are as expected
 * `gcloud app deploy`
 
 # Backend
+BE: https://design-system-prototype-omxtg5ekfa-ey.a.run.app 
 DB: https://console.firebase.google.com/u/0/project/design-system-prototype-5a79b/firestore/data/~2Fusers~2F6MU0LKOQPpG2k9nAbfBk
+* `tsc` to compile TS into JS
+* `gcloud init` & check that settings are as expected
+* `gcloud run deploy`
 
 # Plugin
 * `tsc` to compile plugin
