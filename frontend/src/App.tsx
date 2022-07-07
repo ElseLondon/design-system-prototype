@@ -12,13 +12,13 @@ import { getFirestore } from 'firebase/firestore/lite';
 //
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBvP_47oJuIehuFnckc0ouq7FvBo1Qvpyw",    
+  apiKey: "AIzaSyBvP_47oJuIehuFnckc0ouq7FvBo1Qvpyw",     //:CONCEAL:
   authDomain: "design-system-prototype.firebaseapp.com",
-  projectId: "design-system-prototype",                 
-  storageBucket: "design-system-prototype.appspot.com", 
-  messagingSenderId: "405543776910",                    
-  appId: "1:405543776910:web:2f5a74b6f0855e09cd8fdf",   
-  measurementId: "G-TYWTTVWMXW"                         
+  projectId: "design-system-prototype",
+  storageBucket: "design-system-prototype.appspot.com",
+  messagingSenderId: "405543776910",                     //:CONCEAL:
+  appId: "1:405543776910:web:2f5a74b6f0855e09cd8fdf",    //:CONCEAL:
+  measurementId: "G-TYWTTVWMXW"                          //:CONCEAL:
 };
 
 // Initialize Firebase
