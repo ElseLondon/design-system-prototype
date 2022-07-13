@@ -13,6 +13,16 @@ const db = fs.firestore();
 const app = express();
 const port = 8080;
 
+app.use((_req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+
 app.get('/', async (req: Request, res: Response) => {
   const styleRef = db.collection('users').doc('6MU0LKOQPpG2k9nAbfBk');
   const doc = await styleRef.get();

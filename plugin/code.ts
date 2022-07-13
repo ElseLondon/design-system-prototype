@@ -3,7 +3,7 @@ figma.showUI(`
     window.onmessage = async (event) => {
       if (event.data.pluginMessage.type === 'networkRequest') {
         var request = new XMLHttpRequest()
-        request.open('GET', 'https://design-system-prototype-omxtg5ekfa-ey.a.run.app/')
+        request.open('GET', 'https://design-system-prototype-server-omxtg5ekfa-ey.a.run.app')
         request.responseType = 'text'
         request.onload = () => {
           window.parent.postMessage({pluginMessage: request.response}, '*')
