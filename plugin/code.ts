@@ -18,16 +18,24 @@ figma.ui.postMessage({ type: 'networkRequest' })
 
 figma.ui.onmessage = async (msg) => {
   const parsedJson = JSON.parse(msg)
-  const { paddingTop, paddingBottom, paddingLeft, paddingRight } = parsedJson
+
+  let paddingTop    = parseInt(parsedJson.paddingTop)
+  let paddingBottom = parseInt(parsedJson.paddingBottom)
+  let paddingLeft   = parseInt(parsedJson.paddingLeft)
+  let paddingRight  = parseInt(parsedJson.paddingRight)
 
   for (const node of figma.currentPage.selection) {
     const nodeName = node.name.toLowerCase()
     console.log('nodeName', nodeName)
+    // 
+    // 1. Ascertain whether nodeName contains "small" or "large"
+    // 2. If so, we have to either *0.5(small) or *2(large) to all values
+    // 
 
-    if ("paddingBottom" in node) node.paddingBottom = parseInt(paddingBottom)
-    if ("paddingLeft" in node) node.paddingLeft = parseInt(paddingLeft)
-    if ("paddingRight" in node) node.paddingRight = parseInt(paddingRight)
-    if ("paddingTop" in node) node.paddingTop = parseInt(paddingTop)
+    if ("paddingBottom" in node) node.paddingBottom = paddingBottom
+    if ("paddingLeft" in node) node.paddingLeft = paddingLeft
+    if ("paddingRight" in node) node.paddingRight = paddingRight
+    if ("paddingTop" in node) node.paddingTop = paddingTop
   }
 
   figma.closePlugin()
