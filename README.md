@@ -19,4 +19,5 @@ DB: https://console.firebase.google.com/u/0/project/design-system-prototype-5a79
 * `gcloud run deploy`
 
 # Plugin
+WEB: https://www.figma.com/community/plugin/1131171611673465425 
 * `tsc` to compile plugin
