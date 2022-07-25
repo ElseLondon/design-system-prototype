@@ -18,7 +18,6 @@ figma.ui.postMessage({ type: 'networkRequest' })
 
 figma.ui.onmessage = async (msg) => {
   const parsedJson = JSON.parse(msg)
-
   let paddingTop    = parseInt(parsedJson.paddingTop)
   let paddingBottom = parseInt(parsedJson.paddingBottom)
   let paddingLeft   = parseInt(parsedJson.paddingLeft)
@@ -26,16 +25,29 @@ figma.ui.onmessage = async (msg) => {
 
   for (const node of figma.currentPage.selection) {
     const nodeName = node.name.toLowerCase()
-    console.log('nodeName', nodeName)
-    // 
-    // 1. Ascertain whether nodeName contains "small" or "large"
-    // 2. If so, we have to either *0.5(small) or *2(large) to all values
-    // 
+    const isNodeSmall = nodeName.includes("small")
+    const isNodeLarge = nodeName.includes("large")
+    
+    if (isNodeSmall) {
+      if ("paddingBottom" in node) node.paddingBottom = paddingBottom * 0.5
+      if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft * 0.5
+      if ("paddingRight" in node)  node.paddingRight  = paddingRight * 0.5
+      if ("paddingTop" in node)    node.paddingTop    = paddingTop * 0.5
+    }
 
-    if ("paddingBottom" in node) node.paddingBottom = paddingBottom
-    if ("paddingLeft" in node) node.paddingLeft = paddingLeft
-    if ("paddingRight" in node) node.paddingRight = paddingRight
-    if ("paddingTop" in node) node.paddingTop = paddingTop
+    if (isNodeLarge) {
+      if ("paddingBottom" in node) node.paddingBottom = paddingBottom * 2
+      if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft * 2
+      if ("paddingRight" in node)  node.paddingRight  = paddingRight * 2
+      if ("paddingTop" in node)    node.paddingTop    = paddingTop * 2
+    }
+
+    if (!isNodeSmall && !isNodeLarge) {
+      if ("paddingBottom" in node) node.paddingBottom = paddingBottom
+      if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft
+      if ("paddingRight" in node)  node.paddingRight  = paddingRight
+      if ("paddingTop" in node)    node.paddingTop    = paddingTop
+    }
   }
 
   figma.closePlugin()
