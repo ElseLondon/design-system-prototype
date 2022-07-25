@@ -23,6 +23,12 @@ firebase_admin_1.default.initializeApp({
 const db = firebase_admin_1.default.firestore();
 const app = (0, express_1.default)();
 const port = 8080;
+app.use((_req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT, PATCH, DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    next();
+});
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const styleRef = db.collection('users').doc('6MU0LKOQPpG2k9nAbfBk');
     const doc = yield styleRef.get();
