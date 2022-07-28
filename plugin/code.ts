@@ -1,3 +1,4 @@
+// @ts-ignore
 figma.showUI(`
   <script>
     window.onmessage = async (event) => {
@@ -11,44 +12,49 @@ figma.showUI(`
         request.send()
       }
     }
-  </script>`, { visible: false }
+  </script>`,
+  { visible: false }
 );
 
+// @ts-ignore
 figma.ui.postMessage({ type: 'networkRequest' })
 
+// @ts-ignore
 figma.ui.onmessage = async (msg) => {
   const parsedJson = JSON.parse(msg)
-  const { paddingTop, paddingBottom, paddingLeft, paddingRight } = parsedJson
 
-  console.log('parsedJson:',    parsedJson)
-  console.log('paddingTop:',    paddingTop)
-  console.log('paddingBottom:', paddingBottom)
-  console.log('paddingLeft:',   paddingLeft)
-  console.log('paddingRight:',  paddingRight)
-
+  // @ts-ignore
   for (const node of figma.currentPage.selection) {
-    if ("paddingBottom" in node) {
-    console.log('paddingBottom present')
-      node.paddingBottom = parseInt(paddingBottom)
-    }
-
-    if ("paddingLeft" in node) {
-    console.log('paddingLeft present')
-      node.paddingLeft = parseInt(paddingLeft)
-    }
-
-    if ("paddingRight" in node) {
-    console.log('paddingRight present')
-      node.paddingRight = parseInt(paddingRight)
-    }
-
-    if ("paddingTop" in node) {
-    console.log('paddingTop present')
-      node.paddingTop = parseInt(paddingTop)
-    }
-    
-    console.log('node', node)
+    recurseParentChildren(node, parsedJson)
   }
 
+  // @ts-ignore
   figma.closePlugin()
+}
+
+function recurseParentChildren(node, parsedJson) {
+  for(var i = 0, count = node.children.length; i < count; i++) {
+    const nodeName = node.name.toLowerCase()
+    const isNodeSmall  = nodeName.includes("--small")
+    const isNodeMedium = nodeName.includes("--medium")
+    const isNodeLarge  = nodeName.includes("--large")
+
+    if (isNodeSmall)  applyStyling(parsedJson, node, 0.5)
+    if (isNodeMedium) applyStyling(parsedJson, node, 1)
+    if (isNodeLarge)  applyStyling(parsedJson, node, 2)
+    
+    recurseParentChildren(node.children[i], parsedJson)
+  }
+}
+
+function applyStyling(parsedJson, node, multiple) {
+  let paddingTop    = parseInt(parsedJson.paddingTop)
+  let paddingBottom = parseInt(parsedJson.paddingBottom)
+  let paddingLeft   = parseInt(parsedJson.paddingLeft)
+  let paddingRight  = parseInt(parsedJson.paddingRight)
+
+  if ("paddingBottom" in node) node.paddingBottom = paddingBottom * multiple
+  if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft   * multiple
+  if ("paddingRight" in node)  node.paddingRight  = paddingRight  * multiple
+  if ("paddingTop" in node)    node.paddingTop    = paddingTop    * multiple
 }
