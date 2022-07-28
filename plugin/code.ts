@@ -1,4 +1,3 @@
-// @ts-ignore
 figma.showUI(`
   <script>
     window.onmessage = async (event) => {
@@ -16,19 +15,15 @@ figma.showUI(`
   { visible: false }
 );
 
-// @ts-ignore
 figma.ui.postMessage({ type: 'networkRequest' })
 
-// @ts-ignore
 figma.ui.onmessage = async (msg) => {
   const parsedJson = JSON.parse(msg)
 
-  // @ts-ignore
   for (const node of figma.currentPage.selection) {
     recurseParentChildren(node, parsedJson)
   }
 
-  // @ts-ignore
   figma.closePlugin()
 }
 
