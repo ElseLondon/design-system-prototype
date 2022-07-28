@@ -1,3 +1,4 @@
+// @ts-ignore
 figma.showUI(`
   <script>
     window.onmessage = async (event) => {
@@ -15,45 +16,45 @@ figma.showUI(`
   { visible: false }
 );
 
+// @ts-ignore
 figma.ui.postMessage({ type: 'networkRequest' })
 
+// @ts-ignore
 figma.ui.onmessage = async (msg) => {
   const parsedJson = JSON.parse(msg)
+
+  // @ts-ignore
+  for (const node of figma.currentPage.selection) {
+    recurseParentChildren(node, parsedJson)
+  }
+
+  // @ts-ignore
+  figma.closePlugin()
+}
+
+function recurseParentChildren(node, parsedJson) {
+  for(var i = 0, count = node.children.length; i < count; i++) {
+    const nodeName = node.name.toLowerCase()
+    const isNodeSmall  = nodeName.includes("--small")
+    const isNodeMedium = nodeName.includes("--medium")
+    const isNodeLarge  = nodeName.includes("--large")
+
+    if (isNodeSmall)  applyStyling(parsedJson, node, 0.5)
+    if (isNodeMedium) applyStyling(parsedJson, node, 1)
+    if (isNodeLarge)  applyStyling(parsedJson, node, 2)
+    
+    recurseParentChildren(node.children[i], parsedJson)
+  }
+}
+
+function applyStyling(parsedJson, node, multiple) {
   let paddingTop    = parseInt(parsedJson.paddingTop)
   let paddingBottom = parseInt(parsedJson.paddingBottom)
   let paddingLeft   = parseInt(parsedJson.paddingLeft)
   let paddingRight  = parseInt(parsedJson.paddingRight)
 
-  for (const node of figma.currentPage.selection) {
-    // Accessing child nodes
-    // 
-
-    const nodeName = node.name.toLowerCase()
-    const isNodeSmall  = nodeName.includes("--small")
-    const isNodeMedium = nodeName.includes("--medium")
-    const isNodeLarge  = nodeName.includes("--large")
-    
-    if (isNodeSmall) {
-      if ("paddingBottom" in node) node.paddingBottom = paddingBottom * 0.5
-      if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft * 0.5
-      if ("paddingRight" in node)  node.paddingRight  = paddingRight * 0.5
-      if ("paddingTop" in node)    node.paddingTop    = paddingTop * 0.5
-    }
-
-    if (isNodeMedium) {
-      if ("paddingBottom" in node) node.paddingBottom = paddingBottom
-      if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft
-      if ("paddingRight" in node)  node.paddingRight  = paddingRight
-      if ("paddingTop" in node)    node.paddingTop    = paddingTop
-    }
-
-    if (isNodeLarge) {
-      if ("paddingBottom" in node) node.paddingBottom = paddingBottom * 2
-      if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft * 2
-      if ("paddingRight" in node)  node.paddingRight  = paddingRight * 2
-      if ("paddingTop" in node)    node.paddingTop    = paddingTop * 2
-    }
-  }
-
-  figma.closePlugin()
+  if ("paddingBottom" in node) node.paddingBottom = paddingBottom * multiple
+  if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft   * multiple
+  if ("paddingRight" in node)  node.paddingRight  = paddingRight  * multiple
+  if ("paddingTop" in node)    node.paddingTop    = paddingTop    * multiple
 }
