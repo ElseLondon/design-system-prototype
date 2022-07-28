@@ -11,7 +11,8 @@ figma.showUI(`
         request.send()
       }
     }
-  </script>`, { visible: false }
+  </script>`,
+  { visible: false }
 );
 
 figma.ui.postMessage({ type: 'networkRequest' })
@@ -24,9 +25,13 @@ figma.ui.onmessage = async (msg) => {
   let paddingRight  = parseInt(parsedJson.paddingRight)
 
   for (const node of figma.currentPage.selection) {
+    // Accessing child nodes
+    // 
+
     const nodeName = node.name.toLowerCase()
-    const isNodeSmall = nodeName.includes("small")
-    const isNodeLarge = nodeName.includes("large")
+    const isNodeSmall  = nodeName.includes("--small")
+    const isNodeMedium = nodeName.includes("--medium")
+    const isNodeLarge  = nodeName.includes("--large")
     
     if (isNodeSmall) {
       if ("paddingBottom" in node) node.paddingBottom = paddingBottom * 0.5
@@ -35,18 +40,18 @@ figma.ui.onmessage = async (msg) => {
       if ("paddingTop" in node)    node.paddingTop    = paddingTop * 0.5
     }
 
+    if (isNodeMedium) {
+      if ("paddingBottom" in node) node.paddingBottom = paddingBottom
+      if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft
+      if ("paddingRight" in node)  node.paddingRight  = paddingRight
+      if ("paddingTop" in node)    node.paddingTop    = paddingTop
+    }
+
     if (isNodeLarge) {
       if ("paddingBottom" in node) node.paddingBottom = paddingBottom * 2
       if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft * 2
       if ("paddingRight" in node)  node.paddingRight  = paddingRight * 2
       if ("paddingTop" in node)    node.paddingTop    = paddingTop * 2
-    }
-
-    if (!isNodeSmall && !isNodeLarge) {
-      if ("paddingBottom" in node) node.paddingBottom = paddingBottom
-      if ("paddingLeft" in node)   node.paddingLeft   = paddingLeft
-      if ("paddingRight" in node)  node.paddingRight  = paddingRight
-      if ("paddingTop" in node)    node.paddingTop    = paddingTop
     }
   }
 
