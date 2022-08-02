@@ -12,6 +12,40 @@ import { initializeFirebase } from './Firestore';
 
 const db = initializeFirebase();
 
+// helpers.ts //
+const checkForOnlyTextCharacters = (textInput: string) => {
+  const containsOnlyTextCharacters = /^[a-zA-Z]+$/.test(textInput);
+
+  if (textInput === '') return false;
+  if (containsOnlyTextCharacters) return false;
+
+  return true;
+};
+
+const checkForOnlyNumericalCharacters = (textInput: string) => {
+  const parsesIntoInteger = parseInt(textInput);
+
+  if (textInput === '') return false;
+  if (parsesIntoInteger) return false;
+
+  return true;
+};
+
+const checkForOperand = (textInput: string) => {
+  return ['+', '-', '*', '/' ].some(element => {
+    if (textInput.includes(element)) return true;
+    return false;
+  });
+};
+
+const checkForValidFormulaValue = (textInput: string, variableName: string) => {
+  return parseInt(
+    textInput.replace(variableName, '')
+      .replace('+', '').replace('-', '').replace('*', '').replace('/', '')
+  );
+};
+// helpers.ts //
+
 function App() {
   const [variableSet,   setVariableSet]   = useState(false);
   const [variableName,  setVariableName]  = useState('');
@@ -27,77 +61,44 @@ function App() {
 
   const onVariableValueChange = (eventChange: string) => setVariableValue(eventChange);
 
-  const onPaddingChange = (eventChange: string, paddingValue: string, position: string) => {
-    if (eventChange !== paddingValue) {
-      if (position === 'top')    setPaddingTop(eventChange);
-      if (position === 'bottom') setPaddingBottom(eventChange);
-      if (position === 'left')   setPaddingLeft(eventChange);
-      if (position === 'right')  setPaddingRight(eventChange);
-    };
-  };
-
-  const checkForOnlyTextCharacters = () => {
-    const containsOnlyTextCharacters = /^[a-zA-Z]+$/.test(variableName);
-
-    if (variableName === '') return false;
-    if (containsOnlyTextCharacters) return false;
-
-    return true;
-  };
-
-  const checkForOnlyNumericalCharacters = (str: string) => {
-    const parsesIntoInteger = parseInt(str);
-
-    if (str === '') return false;
-    if (parsesIntoInteger) return false;
-
-    return true;
+  const onPaddingChange = (eventChange: string, position: string) => {
+    if (position === 'top')    setPaddingTop(eventChange);
+    if (position === 'bottom') setPaddingBottom(eventChange);
+    if (position === 'left')   setPaddingLeft(eventChange);
+    if (position === 'right')  setPaddingRight(eventChange);
   };
 
   const checkForPaddingError = (paddingValue: string, position: string) => {
+    if (!variableSet) return checkForOnlyNumericalCharacters(paddingValue);
+
+    // bespoke for paddingTop; variable error validation TBR
     if (variableSet) {
       if (position === 'top') {
-        const doesPaddingFormulaIncludeVariable = paddingTop.includes(variableName);
-
-        const doesPaddingFormulaIncludeOperand = ['+', '-', '*', '/' ].some(element => {
-          if (paddingTop.includes(element)) return true;
-          return false;
-        });
-
-        const isMultipleValid = parseInt(
-          paddingTop.replace(variableName, '')
-            .replace('+', '').replace('-', '').replace('*', '').replace('/', '')
-        ); 
+        const doesPaddingFormulaIncludeOperand = checkForOperand(paddingTop);
+        const isFormulaValueValid = checkForValidFormulaValue(paddingTop, variableName);
         
-        if (!doesPaddingFormulaIncludeVariable) return true;
+        if (!paddingTop.includes(variableName)) return true;
         if (!doesPaddingFormulaIncludeOperand)  return true;
-        if (!isMultipleValid)                   return true;
+        if (!isFormulaValueValid)               return true;
       }
     };
-
-    if (!variableSet) return checkForOnlyNumericalCharacters(paddingValue);
     
     return false;
   };
 
+  // bespoke for paddingTop; variable error validation TBR
   const getPaddingErrorHelperText = () => {
-    if (!variableSet) return checkForPaddingError(paddingTop, 'top') ? "Please use only numerical characters" : ""
+    if (!variableSet) return checkForOnlyNumericalCharacters(paddingTop) ? "Please use only numerical characters" : "" // remove ternary?
 
     if (variableSet) {
-      const doesPaddingFormulaIncludeOperand = ['+', '-', '*', '/' ].some(element => {
-        if (paddingTop.includes(element)) return true;
-        return false;
-      });
+      if (!variableName) return "Please enter a variable name"
 
-      const isMultipleValid = parseInt(
-        paddingTop.replace(variableName, '')
-          .replace('+', '').replace('-', '').replace('*', '').replace('/', '')
-      ); 
+      const doesPaddingFormulaIncludeOperand = checkForOperand(paddingTop);
+      const isFormulaValueValid = checkForValidFormulaValue(paddingTop, variableName);
 
-      if (!variableName)                      return "Please enter a variable name"
       if (!paddingTop.includes(variableName)) return "Please include the variable in the formula"
       if (!doesPaddingFormulaIncludeOperand)  return "Please include an operand in the formula"
-      if (!isMultipleValid)                   return "Please include a valid numerical value"
+      if (!isFormulaValueValid)               return "Please include a valid numerical value"
     }
   }
 
@@ -161,8 +162,8 @@ function App() {
                   variant="outlined"
                   label="Variable Name" 
                   onChange={e => onVariableNameChange(e.target.value)}
-                  error={checkForOnlyTextCharacters()}
-                  helperText={checkForOnlyTextCharacters() ? "Please use only text characters" : ""}
+                  error={checkForOnlyTextCharacters(variableName)}
+                  helperText={checkForOnlyTextCharacters(variableName) ? "Please use only text characters" : ""}
                 />
                 <TextField
                   id="outlined-basic"
@@ -181,7 +182,7 @@ function App() {
             label="Padding Top"
             error={checkForPaddingError(paddingTop, 'top')}
             helperText={getPaddingErrorHelperText()}
-            onChange={e => onPaddingChange(e.target.value, paddingTop, 'top')}
+            onChange={e => onPaddingChange(e.target.value, 'top')}
           />
           <TextField
             id="outlined-basic"
@@ -189,7 +190,7 @@ function App() {
             label="Padding Bottom"
             error={checkForPaddingError(paddingBottom, 'bottom')}
             helperText={checkForPaddingError(paddingBottom, 'bottom') ? "Please use only numerical characters" : ""}
-            onChange={e => onPaddingChange(e.target.value, paddingBottom, 'bottom')}
+            onChange={e => onPaddingChange(e.target.value, 'bottom')}
           />
           <TextField
             id="outlined-basic"
@@ -197,7 +198,7 @@ function App() {
             label="Padding Left" 
             error={checkForPaddingError(paddingLeft, 'left')}
             helperText={checkForPaddingError(paddingLeft, 'left') ? "Please use only numerical characters" : ""}
-            onChange={e => onPaddingChange(e.target.value, paddingLeft, 'left')}
+            onChange={e => onPaddingChange(e.target.value, 'left')}
           />
           <TextField
             id="outlined-basic"
@@ -205,7 +206,7 @@ function App() {
             label="Padding Right"
             error={checkForPaddingError(paddingRight, 'right')}
             helperText={checkForPaddingError(paddingRight, 'right') ? "Please use only numerical characters" : ""}
-            onChange={e => onPaddingChange(e.target.value, paddingRight, 'right')}
+            onChange={e => onPaddingChange(e.target.value, 'right')}
           />
 
           <Button
