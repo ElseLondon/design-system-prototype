@@ -36,24 +36,40 @@ const appStyle = {
 }
 
 function App() {
-  // 
   const [variableSet,  setVariableSet]      = useState(false);
   const [variableName,  setVariableName]    = useState('');
   const [variableValue,  setVariableValue]  = useState('');
-  // 
-  const [paddingTop,    setPaddingTop]    = useState('');
-  const [paddingBottom, setPaddingBottom] = useState('');
-  const [paddingLeft,   setPaddingLeft]   = useState('');
-  const [paddingRight,  setPaddingRight]  = useState('');
 
-  // Change a Variable
+  const [paddingTop,    setPaddingTop]      = useState('');
+  const [paddingBottom, setPaddingBottom]   = useState('');
+  const [paddingLeft,   setPaddingLeft]     = useState('');
+  const [paddingRight,  setPaddingRight]    = useState('');
+
   const onVariableSet = () => setVariableSet(!variableSet);
 
   const onVariableNameChange = (eventChange: string) => setVariableName(eventChange);
 
   const onVariableValueChange = (eventChange: string) => setVariableValue(eventChange);
-  // 
 
+  const checkForOnlyTextCharacters = () => {
+    const containsOnlyTextCharacters = /^[a-zA-Z]+$/.test(variableName);
+
+    if (variableName === '') return false;
+    if (containsOnlyTextCharacters) return false;
+
+    return true;
+  };
+
+  const checkForOnlyNumericalCharacters = (str: string) => {
+    const parsesIntoInteger = parseInt(str);
+
+    if (str === '') return false;
+    if (parsesIntoInteger) return false;
+
+    return true;
+  };
+
+  // Refactor, repetitive function //
   const onPaddingTopChange = (eventChange: string) => {
     if (eventChange !== paddingTop) setPaddingTop(eventChange);
   };
@@ -69,6 +85,12 @@ function App() {
   const onPaddingRightChange = (eventChange: string) => {
     if (eventChange !== paddingRight) setPaddingRight(eventChange);
   };
+
+  const checkForPaddingError = (paddingValue: string) => {
+    if (!variableSet) return checkForOnlyNumericalCharacters(paddingValue);
+    return false;
+  };
+  // //
 
   const submitStyleInfo = async () => {
     console.log('Style Info being submitted...');
@@ -127,12 +149,16 @@ function App() {
                   variant="outlined"
                   label="Variable Name" 
                   onChange={e => onVariableNameChange(e.target.value)}
+                  error={checkForOnlyTextCharacters()}
+                  helperText={checkForOnlyTextCharacters() ? "Please use only text characters" : ""}
                 />
                 <TextField
                   id="outlined-basic"
                   variant="outlined"
                   label="Variable Value"
                   onChange={e => onVariableValueChange(e.target.value)}
+                  error={checkForOnlyNumericalCharacters(variableValue)}
+                  helperText={checkForOnlyNumericalCharacters(variableValue) ? "Please use only numerical characters" : ""}
                 />
               </>
           }
@@ -141,25 +167,33 @@ function App() {
           <TextField
             id="outlined-basic"
             variant="outlined"
-            label="Padding Top" 
+            label="Padding Top"
+            error={checkForPaddingError(paddingTop)}
+            helperText={checkForPaddingError(paddingTop) ? "Please use only numerical characters" : ""}
             onChange={e => onPaddingTopChange(e.target.value)}
           />
           <TextField
             id="outlined-basic"
             variant="outlined"
             label="Padding Bottom"
+            error={checkForPaddingError(paddingBottom)}
+            helperText={checkForPaddingError(paddingBottom) ? "Please use only numerical characters" : ""}
             onChange={e => onPaddingBottomChange(e.target.value)}
           />
           <TextField
             id="outlined-basic"
             variant="outlined"
             label="Padding Left" 
+            error={checkForPaddingError(paddingLeft)}
+            helperText={checkForPaddingError(paddingLeft) ? "Please use only numerical characters" : ""}
             onChange={e => onPaddingLeftChange(e.target.value)}
           />
           <TextField
             id="outlined-basic"
             variant="outlined"
             label="Padding Right"
+            error={checkForPaddingError(paddingRight)}
+            helperText={checkForPaddingError(paddingRight) ? "Please use only numerical characters" : ""}
             onChange={e => onPaddingRightChange(e.target.value)}
           />
 
