@@ -5,8 +5,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import BrushIcon from '@mui/icons-material/Brush';
 import Checkbox from '@mui/material/Checkbox';
-import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
-import Favorite from '@mui/icons-material/Favorite';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 // extract into firestore: 'src/services/firestore'
@@ -17,13 +15,13 @@ import { getFirestore } from 'firebase/firestore/lite';
 //
 
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "design-system-prototype-5a79b.firebaseapp.com",
-  projectId: "design-system-prototype-5a79b",
-  storageBucket: "design-system-prototype-5a79b.appspot.com",
-  messagingSenderId: "",
-  appId: "",
-  measurementId: ""
+  // apiKey: "",
+  // authDomain: "design-system-prototype-5a79b.firebaseapp.com",
+  // projectId: "design-system-prototype-5a79b",
+  // storageBucket: "design-system-prototype-5a79b.appspot.com",
+  // messagingSenderId: "",
+  // appId: "",
+  // measurementId: ""
 };
 
 // Initialize Firebase
@@ -98,6 +96,8 @@ function App() {
 
   const inactivateSubmitButton = () => {
     if (paddingTop === '' || paddingBottom === '' || paddingLeft === '' || paddingRight === '') return true;
+
+    if (variableSet && (!variableName || !variableValue)) return true;
     
     return false;
   };
