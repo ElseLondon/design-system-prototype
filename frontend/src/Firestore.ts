@@ -18,4 +18,4 @@ export const initializeFirebase = () => {
     const db = getFirestore();
 
     return db;
-}
+};

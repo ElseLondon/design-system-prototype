@@ -19,6 +19,7 @@ export const checkForOnlyNumericalCharacters = (textInput: string) => {
 export const checkForOperand = (textInput: string) => {
   return ['+', '-', '*', '/' ].some(element => {
     if (textInput.includes(element)) return true;
+    
     return false;
   });
 };

@@ -57,14 +57,15 @@ function App() {
   };
 
   const getPaddingErrorHelperText = (paddingValue: string) => {
-    if (!variableSet) return checkForOnlyNumericalCharacters(paddingValue) ? "Please use only numerical characters" : "" // remove ternary?
+    if (!variableSet) {
+      return checkForOnlyNumericalCharacters(paddingValue) ? "Please use only numerical characters" : ""
+    };
 
     if (variableSet) {
-      if (!variableName) return "Please enter a variable name"
-
       const doesPaddingFormulaIncludeOperand = checkForOperand(paddingValue);
       const isFormulaValueValid = checkForValidFormulaValue(paddingValue, variableName);
 
+      if (!variableName)                        return "Please enter a variable name"
       if (!paddingValue.includes(variableName)) return "Please include the variable in the formula"
       if (!doesPaddingFormulaIncludeOperand)    return "Please include an operand in the formula"
       if (!isFormulaValueValid)                 return "Please include a valid numerical value"
@@ -73,7 +74,6 @@ function App() {
 
   const inactivateSubmitButton = () => {
     if (paddingTop === '' || paddingBottom === '' || paddingLeft === '' || paddingRight === '') return true;
-
     if (variableSet && (!variableName || !variableValue)) return true;
     
     return false;
@@ -82,29 +82,38 @@ function App() {
   const submitStyleInfo = async () => {
     console.log('Style Info being submitted...');
 
-    console.log('variableName', variableName)
-    console.log('variableValue', variableValue)
-    
-    // if variable set, calculate the values here
-    // remove variable
-    // remove whitespace
-    // check order of operations 
-    // apply order of operations
-
-    try {
-      const styleRef = doc(db, "users", "6MU0LKOQPpG2k9nAbfBk");
-
-      await updateDoc(styleRef, {
+    // // // // // // // // // // // //
+    // Variable Formula Calculation //
+    let data = {};
+  
+    if (!variableSet) {
+      data = {
         paddingTop,
         paddingBottom,
         paddingLeft,
         paddingRight
-      });
+      }
+    }
+    // 
+    console.log('variableSet:', variableSet);
+    console.log('data:',        data);
+    // 
+    // if variable set, calculate the values here
+    // remove variable
+    // remove whitespace
+    // check order of operations 
+    // apply order of operations   //
+    // // // // // // // // // // //
 
+    // can we move this to firestore file?
+    try {
+      const styleRef = doc(db, "users", "6MU0LKOQPpG2k9nAbfBk");
+      await updateDoc(styleRef, data);
       console.log("Document 6MU0LKOQPpG2k9nAbfBk Padding Styles updated");
     } catch (e) {
       console.error("Error adding document: ", e);
-    }
+    };
+    // 
   };
   
   return (
