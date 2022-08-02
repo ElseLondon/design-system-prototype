@@ -16,6 +16,7 @@ import {
   checkForValidFormulaValue
 } from './Helpers';
 
+
 const db = initializeFirebase();
 
 function App() {
@@ -43,34 +44,30 @@ function App() {
   const checkForPaddingError = (paddingValue: string, position: string) => {
     if (!variableSet) return checkForOnlyNumericalCharacters(paddingValue);
 
-    // bespoke for paddingTop; variable error validation TBR
     if (variableSet) {
-      if (position === 'top') {
-        const doesPaddingFormulaIncludeOperand = checkForOperand(paddingTop);
-        const isFormulaValueValid = checkForValidFormulaValue(paddingTop, variableName);
-        
-        if (!paddingTop.includes(variableName)) return true;
-        if (!doesPaddingFormulaIncludeOperand)  return true;
-        if (!isFormulaValueValid)               return true;
-      }
+      const doesPaddingFormulaIncludeOperand = checkForOperand(paddingValue);
+      const isFormulaValueValid = checkForValidFormulaValue(paddingValue, variableName);
+      
+      if (!paddingValue.includes(variableName)) return true;
+      if (!doesPaddingFormulaIncludeOperand)    return true;
+      if (!isFormulaValueValid)                 return true;
     };
     
     return false;
   };
 
-  // bespoke for paddingTop; variable error validation TBR
-  const getPaddingErrorHelperText = () => {
-    if (!variableSet) return checkForOnlyNumericalCharacters(paddingTop) ? "Please use only numerical characters" : "" // remove ternary?
+  const getPaddingErrorHelperText = (paddingValue: string) => {
+    if (!variableSet) return checkForOnlyNumericalCharacters(paddingValue) ? "Please use only numerical characters" : "" // remove ternary?
 
     if (variableSet) {
       if (!variableName) return "Please enter a variable name"
 
-      const doesPaddingFormulaIncludeOperand = checkForOperand(paddingTop);
-      const isFormulaValueValid = checkForValidFormulaValue(paddingTop, variableName);
+      const doesPaddingFormulaIncludeOperand = checkForOperand(paddingValue);
+      const isFormulaValueValid = checkForValidFormulaValue(paddingValue, variableName);
 
-      if (!paddingTop.includes(variableName)) return "Please include the variable in the formula"
-      if (!doesPaddingFormulaIncludeOperand)  return "Please include an operand in the formula"
-      if (!isFormulaValueValid)               return "Please include a valid numerical value"
+      if (!paddingValue.includes(variableName)) return "Please include the variable in the formula"
+      if (!doesPaddingFormulaIncludeOperand)    return "Please include an operand in the formula"
+      if (!isFormulaValueValid)                 return "Please include a valid numerical value"
     }
   }
 
@@ -153,7 +150,7 @@ function App() {
             variant="outlined"
             label="Padding Top"
             error={checkForPaddingError(paddingTop, 'top')}
-            helperText={getPaddingErrorHelperText()}
+            helperText={getPaddingErrorHelperText(paddingTop)}
             onChange={e => onPaddingChange(e.target.value, 'top')}
           />
           <TextField
@@ -161,7 +158,7 @@ function App() {
             variant="outlined"
             label="Padding Bottom"
             error={checkForPaddingError(paddingBottom, 'bottom')}
-            helperText={checkForPaddingError(paddingBottom, 'bottom') ? "Please use only numerical characters" : ""}
+            helperText={getPaddingErrorHelperText(paddingBottom)}
             onChange={e => onPaddingChange(e.target.value, 'bottom')}
           />
           <TextField
@@ -169,7 +166,7 @@ function App() {
             variant="outlined"
             label="Padding Left" 
             error={checkForPaddingError(paddingLeft, 'left')}
-            helperText={checkForPaddingError(paddingLeft, 'left') ? "Please use only numerical characters" : ""}
+            helperText={getPaddingErrorHelperText(paddingLeft)}
             onChange={e => onPaddingChange(e.target.value, 'left')}
           />
           <TextField
@@ -177,7 +174,7 @@ function App() {
             variant="outlined"
             label="Padding Right"
             error={checkForPaddingError(paddingRight, 'right')}
-            helperText={checkForPaddingError(paddingRight, 'right') ? "Please use only numerical characters" : ""}
+            helperText={getPaddingErrorHelperText(paddingRight)}
             onChange={e => onPaddingChange(e.target.value, 'right')}
           />
 
