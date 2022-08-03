@@ -67,10 +67,32 @@ function App() {
 
       if (!variableName)                        return "Please enter a variable name"
       if (!paddingValue.includes(variableName)) return "Please include the variable in the formula"
-      if (!doesPaddingFormulaIncludeOperand)    return "Please include an operand in the formula"
+      if (!doesPaddingFormulaIncludeOperand)    return "Please include an operand (+ - * /) in the formula"
       if (!isFormulaValueValid)                 return "Please include a valid numerical value"
     }
   }
+
+  const calculatePaddingFormula = (paddingInput: string) => {
+    const paddingWithoutWhitespace = paddingInput.replace(/\s/g, '');
+    const operand = paddingWithoutWhitespace.replace(variableName, '').replace(/[0-9]/g, '');
+    const formulaValue = paddingWithoutWhitespace.replace(variableName, '').replace(/\D/g,'');
+    const variableFirst = paddingWithoutWhitespace.replace(variableName, '')[0] === operand;
+
+    if (operand === '+') return parseInt(formulaValue) + parseInt(variableValue);
+    if (operand === '*') return parseInt(formulaValue) * parseInt(variableValue);
+
+    if (operand === '-') {
+      return variableFirst ? 
+        parseInt(variableValue) - parseInt(formulaValue) : 
+        parseInt(formulaValue)  - parseInt(variableValue)
+    };
+
+    if (operand === '/') {
+      return variableFirst ? 
+        parseInt(variableValue) / parseInt(formulaValue) : 
+        parseInt(formulaValue)  / parseInt(variableValue)
+    };
+  };
 
   const inactivateSubmitButton = () => {
     if (paddingTop === '' || paddingBottom === '' || paddingLeft === '' || paddingRight === '') return true;
@@ -82,30 +104,33 @@ function App() {
   const submitStyleInfo = async () => {
     console.log('Style Info being submitted...');
 
-    // // // // // // // // // // // //
-    // Variable Formula Calculation //
     let data = {};
   
-    if (!variableSet) {
+    if (variableSet) {
+      const formulaCalculatedPaddingTop    = calculatePaddingFormula(paddingTop);
+      const formulaCalculatedPaddingBottom = calculatePaddingFormula(paddingBottom);
+      const formulaCalculatedPaddingLeft   = calculatePaddingFormula(paddingLeft);
+      const formulaCalculatedPaddingRight  = calculatePaddingFormula(paddingRight);
+
+      data = {
+        paddingTop:    formulaCalculatedPaddingTop,
+        paddingBottom: formulaCalculatedPaddingBottom,
+        paddingLeft:   formulaCalculatedPaddingLeft,
+        paddingRight:  formulaCalculatedPaddingRight
+      };
+
+    } else {
       data = {
         paddingTop,
         paddingBottom,
         paddingLeft,
         paddingRight
-      }
-    }
-    // 
-    console.log('variableSet:', variableSet);
-    console.log('data:',        data);
-    // 
-    // if variable set, calculate the values here
-    // remove variable
-    // remove whitespace
-    // check order of operations 
-    // apply order of operations   //
-    // // // // // // // // // // //
+      };
 
-    // can we move this to firestore file?
+    };
+
+    console.log('data:', data);
+
     try {
       const styleRef = doc(db, "users", "6MU0LKOQPpG2k9nAbfBk");
       await updateDoc(styleRef, data);
@@ -113,7 +138,6 @@ function App() {
     } catch (e) {
       console.error("Error adding document: ", e);
     };
-    // 
   };
   
   return (
